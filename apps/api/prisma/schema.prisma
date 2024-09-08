@@ -1,0 +1,236 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id        String   @id @default(uuid())
+  name      String
+  document  String   @unique
+  avatarUrl String   @map("avatar_url")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  tokens  Token[]
+  invites Invite[]
+  members Member[]
+  stores  Store[]
+
+  @@map("companies")
+}
+
+model Member {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  roles        Role[]
+  avatarUrl    String   @map("avatar_url")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  company   Company @relation(fields: [companyId], references: [id])
+  companyId String  @map("company_id")
+
+  tokens  Token[]
+  invites Invite[]
+  Product Product[]
+  Sale    Sale[]
+  AdsCost AdsCost[]
+
+  @@map("members")
+}
+
+model Store {
+  id        String   @id @default(uuid())
+  name      String
+  avatarUrl String   @map("avatar_url")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  company   Company @relation(fields: [companyId], references: [id])
+  companyId String  @map("company_id")
+
+  @@map("stores")
+}
+
+model Product {
+  id           String   @id @default(uuid())
+  name         String
+  description  String
+  platform     String
+  avatarUrl    String?  @map("avatar_url")
+  price        Int
+  costPerUnit  Int      @map("cost_per_unit")
+  quantity     Int
+  shippingCost Int      @map("shipping_cost")
+  tax          Int      @default(0)
+  pixTax       Int      @default(0) @map("pix_tax")
+  bankSlipTax  Int      @default(0) @map("bank_slip_tax")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  lastUpdateBy Member? @relation(fields: [memberId], references: [id])
+  memberId     String? @map("member_id")
+
+  installmentTaxes  InstallmentTax[]
+  cardOperatorTaxes CardOperatorTax[]
+  otherTaxes        OtherTax[]
+  sales             Sale[]
+
+  @@map("products")
+}
+
+model Sale {
+  id             String        @id @default(uuid())
+  customer       String?
+  customerPhone  String?       @map("customer_phone")
+  customerEmail  String?       @map("customer_email")
+  customerStreet String?       @map("customer_street")
+  customerCity   String?       @map("customer_city")
+  saleCode       String?       @map("sale_code")
+  date           DateTime
+  createdAt      DateTime      @default(now()) @map("created_at")
+  updatedAt      DateTime      @updatedAt @map("updated_at")
+  status         SaleStatus
+  paymentMethod  PaymentMethod @map("payment_method")
+  installment    Installment?
+
+  seller    Member  @relation(fields: [sellerId], references: [id])
+  sellerId  String  @map("seller_id")
+  product   Product @relation(fields: [productId], references: [id])
+  productId String  @map("product_id")
+
+  @@map("sales")
+}
+
+model AdsCost {
+  id       String      @id @default(uuid())
+  cost     Int
+  date     DateTime
+  platform AdsPlatform
+
+  insertedBy Member @relation(fields: [memberId], references: [id])
+  memberId   String
+
+  @@map("ads_costs")
+}
+
+model InstallmentTax {
+  id          String      @id @default(uuid())
+  installment Installment
+  price       Int
+
+  Product   Product? @relation(fields: [productId], references: [id])
+  productId String?  @map("product_id")
+
+  @@map("installment_taxes")
+}
+
+model CardOperatorTax {
+  id          String      @id @default(uuid())
+  installment Installment
+  price       Int
+
+  Product   Product? @relation(fields: [productId], references: [id])
+  productId String?  @map("product_id")
+
+  @@map("card_operator_taxes")
+}
+
+model OtherTax {
+  id         String @id @default(uuid())
+  name       String
+  percentage Int
+
+  Product   Product? @relation(fields: [productId], references: [id])
+  productId String?  @map("product_id")
+
+  @@map("other_taxes")
+}
+
+enum AdsPlatform {
+  FACEBOOK_ADS
+  KWAI_ADS
+  TIKTOK_ADS
+  GOOGLE_ADS
+}
+
+enum PaymentMethod {
+  PIX
+  BANKSLIP
+  CREDIT_CARD
+  DEBIT_CARD
+}
+
+enum SaleStatus {
+  PAID
+  PROCESS
+  CANCELED
+}
+
+enum Installment {
+  ONE
+  TWO
+  THREE
+  FOUR
+  FIVE
+  SIX
+  SEVEN
+  EIGHT
+  NINE
+  TEN
+  ELEVEN
+  TWELVE
+}
+
+model Invite {
+  id        String   @id @default(uuid())
+  email     String
+  role      Role
+  createdAt DateTime @default(now()) @map("created_at")
+
+  author   Member? @relation(fields: [memberId], references: [id])
+  memberId String? @map("member_id")
+
+  company   Company @relation(fields: [companyId], references: [id])
+  companyId String  @map("company_id")
+
+  @@unique([email, companyId])
+  @@map("invites")
+}
+
+model Token {
+  id        String    @id @default(uuid())
+  type      TokenType
+  createdAt String    @map("created_at")
+
+  member   Member? @relation(fields: [memberId], references: [id])
+  memberId String? @map("member_id")
+
+  company   Company? @relation(fields: [companyId], references: [id])
+  companyId String?  @map("company_id")
+
+  @@map("tokens")
+}
+
+enum TokenType {
+  PASSWORD_RECOVERY
+}
+
+enum Role {
+  OWNER
+  ADMIN
+  MANAGER
+  SELLER
+}

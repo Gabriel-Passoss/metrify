@@ -1,0 +1,27 @@
+{
+  "name": "@metrify/api",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "tsx watch src/http/server.ts"
+  },
+  "dependencies": {
+    "@fastify/cors": "^9.0.1",
+    "@prisma/client": "^5.19.1",
+    "fastify": "^4.26.2",
+    "fastify-type-provider-zod": "^1.1.9",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@metrify/eslint-config": "*",
+    "@metrify/prettier": "*",
+    "@types/node": "^20.12.6",
+    "prisma": "^5.19.1",
+    "tsx": "^4.7.2"
+  },
+  "prettier": "@metrify/prettier",
+  "eslintConfig": {
+    "extends": [
+      "@metrify/eslint-config/node"
+    ]
+  }
+}
