@@ -17,7 +17,7 @@ model Company {
   id        String   @id @default(uuid())
   name      String
   document  String   @unique
-  avatarUrl String   @map("avatar_url")
+  avatarUrl String?  @map("avatar_url")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -35,7 +35,7 @@ model Member {
   email        String   @unique
   passwordHash String   @map("password_hash")
   roles        Role[]
-  avatarUrl    String   @map("avatar_url")
+  avatarUrl    String?  @map("avatar_url")
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 
@@ -54,7 +54,7 @@ model Member {
 model Store {
   id        String   @id @default(uuid())
   name      String
-  avatarUrl String   @map("avatar_url")
+  avatarUrl String?  @map("avatar_url")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
