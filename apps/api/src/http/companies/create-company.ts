@@ -4,6 +4,8 @@ import { z } from 'zod'
 
 import { prisma } from '@/lib/prisma'
 
+import { BadRequestError } from '../_errors/bad-request-error'
+
 export async function createCompany(app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().post(
     '/companies',
@@ -11,7 +13,7 @@ export async function createCompany(app: FastifyInstance) {
       schema: {
         body: z.object({
           name: z.string(),
-          document: z.string(),
+          document: z.string().min(14, { message: 'Insert a valid document' }),
           avatarUrl: z.string().url().optional(),
         }),
       },
@@ -26,9 +28,7 @@ export async function createCompany(app: FastifyInstance) {
       })
 
       if (companyWithSameDocument) {
-        return reply
-          .status(400)
-          .send({ message: 'Alredy exists a company with same document' })
+        throw new BadRequestError('Company with that document already exists.')
       }
 
       await prisma.company.create({

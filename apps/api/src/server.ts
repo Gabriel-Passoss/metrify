@@ -7,11 +7,14 @@ import {
 } from 'fastify-type-provider-zod'
 
 import { createCompany } from './http/companies/create-company'
+import { errorHandler } from './http/error-handler'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
 app.setSerializerCompiler(serializerCompiler)
 app.setValidatorCompiler(validatorCompiler)
+
+app.setErrorHandler(errorHandler)
 
 app.register(fastifyCors)
 

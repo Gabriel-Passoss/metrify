@@ -2,7 +2,7 @@
   "name": "@metrify/api",
   "version": "1.0.0",
   "scripts": {
-    "dev": "tsx watch src/http/server.ts",
+    "dev": "tsx watch src/server.ts",
     "test:e2e": "vitest run --config ./vitest.config.e2e.ts"
   },
   "dependencies": {
