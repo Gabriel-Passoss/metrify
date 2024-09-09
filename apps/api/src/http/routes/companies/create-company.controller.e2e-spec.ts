@@ -22,4 +22,27 @@ describe('(E2E) Create Company', () => {
 
     expect(companyOnDatabase).toBeTruthy()
   })
+
+  it('should not be able to create a company with same document', async () => {
+    await prisma.company.create({
+      data: {
+        name: 'Test Company 1',
+        document: '75862377000139',
+      },
+    })
+
+    const response = await app.inject({
+      method: 'POST',
+      url: '/companies',
+      body: {
+        name: 'Test Company 2',
+        document: '75862377000139',
+      },
+    })
+
+    expect(response.statusCode).toEqual(400)
+    expect(response.json()).toMatchObject({
+      message: 'Company with that document already exists.',
+    })
+  })
 })
