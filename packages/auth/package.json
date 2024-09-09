@@ -5,13 +5,17 @@
   "main": "src/index.ts",
   "types": "src/index.ts",
   "devDependencies": {
-    "@metrify/prettier": "*",
-    "@metrify/eslint-config": "*"
+    "@metrify/eslint-config": "*",
+    "@metrify/prettier": "*"
   },
   "prettier": "@metrify/prettier",
   "eslintConfig": {
     "extends": [
       "@metrify/eslint-config/node"
     ]
+  },
+  "dependencies": {
+    "@casl/ability": "^6.7.1",
+    "zod": "^3.23.8"
   }
 }
