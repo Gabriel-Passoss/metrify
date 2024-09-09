@@ -1,4 +1,5 @@
 import fastifyCors from '@fastify/cors'
+import fastifyJwt from '@fastify/jwt'
 import { fastify } from 'fastify'
 import {
   serializerCompiler,
@@ -14,6 +15,9 @@ export const app = fastify().withTypeProvider<ZodTypeProvider>()
 
 app.setSerializerCompiler(serializerCompiler)
 app.setValidatorCompiler(validatorCompiler)
+app.register(fastifyJwt, {
+  secret: 'develop',
+})
 
 app.setErrorHandler(errorHandler)
 
