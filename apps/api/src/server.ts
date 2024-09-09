@@ -6,10 +6,11 @@ import {
   ZodTypeProvider,
 } from 'fastify-type-provider-zod'
 
-import { createCompany } from './http/companies/create-company'
+import { createCompany } from '@/http/companies/create-company.controller'
+
 import { errorHandler } from './http/error-handler'
 
-const app = fastify().withTypeProvider<ZodTypeProvider>()
+export const app = fastify().withTypeProvider<ZodTypeProvider>()
 
 app.setSerializerCompiler(serializerCompiler)
 app.setValidatorCompiler(validatorCompiler)
