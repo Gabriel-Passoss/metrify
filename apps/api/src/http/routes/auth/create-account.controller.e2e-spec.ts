@@ -1,16 +1,22 @@
+import request from 'supertest'
+
 import { prisma } from '@/lib/prisma'
 import { app } from '@/server'
 
 describe('(E2E) Create Account', () => {
+  beforeAll(async () => {
+    await app.ready()
+  })
+
+  afterAll(async () => {
+    await app.close()
+  })
+
   it('should be able to create an account', async () => {
-    const response = await app.inject({
-      method: 'POST',
-      url: '/users',
-      body: {
-        name: 'Testing User',
-        email: 'testing@email.com',
-        password: 'testing-password',
-      },
+    const response = await request(app.server).post('/users').send({
+      name: 'Testing User',
+      email: 'testing@email.com',
+      password: 'testing-password',
     })
 
     expect(response.statusCode).toEqual(201)
@@ -33,18 +39,14 @@ describe('(E2E) Create Account', () => {
       },
     })
 
-    const response = await app.inject({
-      method: 'POST',
-      url: '/users',
-      body: {
-        name: 'name',
-        email: 'existing-email@email.com',
-        password: 'password',
-      },
+    const response = await request(app.server).post('/users').send({
+      name: 'name',
+      email: 'existing-email@email.com',
+      password: 'password',
     })
 
     expect(response.statusCode).toEqual(400)
-    expect(response.json()).toMatchObject({
+    expect(response.body).toMatchObject({
       message: 'Already exists an user with same e-mail',
     })
   })
