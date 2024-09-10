@@ -13,7 +13,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Company {
+model Organization {
   id        String   @id @default(uuid())
   name      String
   slug      String   @unique
@@ -22,177 +22,57 @@ model Company {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  tokens  Token[]
+  owner  User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id")
+
   invites Invite[]
   members Member[]
-  stores  Store[]
 
-  @@map("companies")
+  @@map("organizations")
 }
 
 model Member {
+  id   String @id @default(uuid())
+  role Role   @default(SELLER)
+
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  organizationId String?       @map("organization_id")
+
+  user   User?   @relation(fields: [userId], references: [id])
+  userId String? @map("user_id")
+
+  @@unique([organizationId, userId])
+  @@map("members")
+}
+
+model User {
   id           String   @id @default(uuid())
   name         String
   email        String   @unique
   passwordHash String   @map("password_hash")
-  role         Role[]
   avatarUrl    String?  @map("avatar_url")
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 
-  company   Company @relation(fields: [companyId], references: [id])
-  companyId String  @map("company_id")
+  tokens             Token[]
+  accounts           Account[]
+  invites            Invite[]
+  member_on          Member[]
+  owns_organizations Organization[]
 
-  tokens  Token[]
-  invites Invite[]
-  Product Product[]
-  Sale    Sale[]
-  AdsCost AdsCost[]
-
-  @@map("members")
+  @@map("users")
 }
 
-model Store {
-  id        String   @id @default(uuid())
-  name      String
-  avatarUrl String?  @map("avatar_url")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+model Account {
+  id                String          @id @default(uuid())
+  provider          AccountProvider
+  providerAccountId String          @unique @map("provider_account_id")
 
-  company   Company @relation(fields: [companyId], references: [id])
-  companyId String  @map("company_id")
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id")
 
-  @@map("stores")
-}
-
-model Product {
-  id           String   @id @default(uuid())
-  name         String
-  description  String
-  platform     String
-  avatarUrl    String?  @map("avatar_url")
-  price        Int
-  costPerUnit  Int      @map("cost_per_unit")
-  quantity     Int
-  shippingCost Int      @map("shipping_cost")
-  tax          Int      @default(0)
-  pixTax       Int      @default(0) @map("pix_tax")
-  bankSlipTax  Int      @default(0) @map("bank_slip_tax")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
-
-  lastUpdateBy Member? @relation(fields: [memberId], references: [id])
-  memberId     String? @map("member_id")
-
-  installmentTaxes  InstallmentTax[]
-  cardOperatorTaxes CardOperatorTax[]
-  otherTaxes        OtherTax[]
-  sales             Sale[]
-
-  @@map("products")
-}
-
-model Sale {
-  id             String        @id @default(uuid())
-  customer       String?
-  customerPhone  String?       @map("customer_phone")
-  customerEmail  String?       @map("customer_email")
-  customerStreet String?       @map("customer_street")
-  customerCity   String?       @map("customer_city")
-  saleCode       String?       @map("sale_code")
-  date           DateTime
-  createdAt      DateTime      @default(now()) @map("created_at")
-  updatedAt      DateTime      @updatedAt @map("updated_at")
-  status         SaleStatus
-  paymentMethod  PaymentMethod @map("payment_method")
-  installment    Installment?
-
-  seller    Member  @relation(fields: [sellerId], references: [id])
-  sellerId  String  @map("seller_id")
-  product   Product @relation(fields: [productId], references: [id])
-  productId String  @map("product_id")
-
-  @@map("sales")
-}
-
-model AdsCost {
-  id       String      @id @default(uuid())
-  cost     Int
-  date     DateTime
-  platform AdsPlatform
-
-  insertedBy Member @relation(fields: [memberId], references: [id])
-  memberId   String
-
-  @@map("ads_costs")
-}
-
-model InstallmentTax {
-  id          String      @id @default(uuid())
-  installment Installment
-  price       Int
-
-  Product   Product? @relation(fields: [productId], references: [id])
-  productId String?  @map("product_id")
-
-  @@map("installment_taxes")
-}
-
-model CardOperatorTax {
-  id          String      @id @default(uuid())
-  installment Installment
-  price       Int
-
-  Product   Product? @relation(fields: [productId], references: [id])
-  productId String?  @map("product_id")
-
-  @@map("card_operator_taxes")
-}
-
-model OtherTax {
-  id         String @id @default(uuid())
-  name       String
-  percentage Int
-
-  Product   Product? @relation(fields: [productId], references: [id])
-  productId String?  @map("product_id")
-
-  @@map("other_taxes")
-}
-
-enum AdsPlatform {
-  FACEBOOK_ADS
-  KWAI_ADS
-  TIKTOK_ADS
-  GOOGLE_ADS
-}
-
-enum PaymentMethod {
-  PIX
-  BANKSLIP
-  CREDIT_CARD
-  DEBIT_CARD
-}
-
-enum SaleStatus {
-  PAID
-  PROCESS
-  CANCELED
-}
-
-enum Installment {
-  ONE
-  TWO
-  THREE
-  FOUR
-  FIVE
-  SIX
-  SEVEN
-  EIGHT
-  NINE
-  TEN
-  ELEVEN
-  TWELVE
+  @@unique([provider, userId])
+  @@map("accounts")
 }
 
 model Invite {
@@ -201,13 +81,14 @@ model Invite {
   role      Role
   createdAt DateTime @default(now()) @map("created_at")
 
-  author   Member? @relation(fields: [memberId], references: [id])
-  memberId String? @map("member_id")
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String       @map("organization_id")
 
-  company   Company @relation(fields: [companyId], references: [id])
-  companyId String  @map("company_id")
+  user   User?   @relation(fields: [userId], references: [id])
+  userId String? @map("user_id")
 
-  @@unique([email, companyId])
+  @@unique([email, organizationId])
+  @@index([email])
   @@map("invites")
 }
 
@@ -216,13 +97,14 @@ model Token {
   type      TokenType
   createdAt String    @map("created_at")
 
-  member   Member? @relation(fields: [memberId], references: [id])
-  memberId String? @map("member_id")
-
-  company   Company? @relation(fields: [companyId], references: [id])
-  companyId String?  @map("company_id")
+  User   User?   @relation(fields: [userId], references: [id])
+  userId String?
 
   @@map("tokens")
+}
+
+enum AccountProvider {
+  GOOGLE
 }
 
 enum TokenType {
@@ -230,8 +112,8 @@ enum TokenType {
 }
 
 enum Role {
-  OWNER
   ADMIN
   MANAGER
   SELLER
+  BILLING
 }

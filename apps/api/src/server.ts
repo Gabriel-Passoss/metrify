@@ -10,8 +10,6 @@ import {
   ZodTypeProvider,
 } from 'fastify-type-provider-zod'
 
-import { createCompany } from '@/http/routes/companies/create-company.controller'
-
 import { errorHandler } from './http/error-handler'
 
 export const app = fastify().withTypeProvider<ZodTypeProvider>()
@@ -41,8 +39,6 @@ app.register(fastifySwaggerUI, {
 app.setErrorHandler(errorHandler)
 
 app.register(fastifyCors)
-
-app.register(createCompany)
 
 app.listen({ port: 3333 }).then(() => {
   console.log('Server running!')
