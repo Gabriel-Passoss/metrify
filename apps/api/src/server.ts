@@ -11,6 +11,7 @@ import {
 } from 'fastify-type-provider-zod'
 
 import { errorHandler } from './http/error-handler'
+import { createAccount } from './http/routes/auth/create-account.controller'
 
 export const app = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -39,6 +40,9 @@ app.register(fastifySwaggerUI, {
 app.setErrorHandler(errorHandler)
 
 app.register(fastifyCors)
+
+// Auth controllers
+app.register(createAccount)
 
 app.listen({ port: 3333 }).then(() => {
   console.log('Server running!')
