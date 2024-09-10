@@ -16,6 +16,7 @@ datasource db {
 model Company {
   id        String   @id @default(uuid())
   name      String
+  slug      String   @unique
   document  String   @unique
   avatarUrl String?  @map("avatar_url")
   createdAt DateTime @default(now()) @map("created_at")
