@@ -14,6 +14,7 @@ export async function createCompany(app: FastifyInstance) {
         summary: 'Create a new company',
         body: z.object({
           name: z.string(),
+          slug: z.string(),
           document: z.string().min(14, { message: 'Insert a valid document' }),
           avatarUrl: z.string().url().optional(),
         }),
@@ -26,7 +27,7 @@ export async function createCompany(app: FastifyInstance) {
       },
     },
     async (request, reply) => {
-      const { name, document, avatarUrl } = request.body
+      const { name, slug, document, avatarUrl } = request.body
 
       const companyWithSameDocument = await prisma.company.findUnique({
         where: {
@@ -38,9 +39,20 @@ export async function createCompany(app: FastifyInstance) {
         throw new BadRequestError('Company with that document already exists.')
       }
 
+      const companyWithSameSlug = await prisma.company.findUnique({
+        where: {
+          slug,
+        },
+      })
+
+      if (companyWithSameSlug) {
+        throw new BadRequestError('Company with that slug already exists.')
+      }
+
       await prisma.company.create({
         data: {
           name,
+          slug,
           document,
           avatarUrl,
         },
