@@ -19,7 +19,7 @@ export async function createAccount(app: FastifyInstance) {
         }),
         response: {
           201: z.null(),
-          401: z.object({
+          400: z.object({
             message: z.string(),
           }),
         },
