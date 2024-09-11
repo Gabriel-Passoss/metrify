@@ -13,6 +13,7 @@ import {
 import { errorHandler } from './http/error-handler'
 import { authenticateWithPassword } from './http/routes/auth/authenticate-with-password.controller'
 import { createAccount } from './http/routes/auth/create-account.controller'
+import { getProfile } from './http/routes/auth/get-profile.controller'
 
 export const app = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -45,7 +46,8 @@ app.register(fastifyCors)
 // Auth controllers
 app.register(createAccount)
 app.register(authenticateWithPassword)
+app.register(getProfile)
 
-app.listen({ port: 3333 }).then(() => {
-  console.log('Server running!')
+app.listen().then(() => {
+  // console.log('Server running!')
 })
