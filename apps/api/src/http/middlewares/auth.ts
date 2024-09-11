@@ -7,7 +7,7 @@ import { UnauthorizedError } from '../_errors/unauthorized-error'
 
 export const authMiddleware = fastifyPlugin(async (app: FastifyInstance) => {
   app.addHook('preHandler', async (request) => {
-    request.getCurrentMemberId = async () => {
+    request.getCurrentUserId = async () => {
       try {
         const { sub } = await request.jwtVerify<{ sub: string }>()
 
@@ -18,7 +18,7 @@ export const authMiddleware = fastifyPlugin(async (app: FastifyInstance) => {
     }
 
     request.getUserMembership = async (slug: string) => {
-      const userId = await request.getCurrentMemberId()
+      const userId = await request.getCurrentUserId()
       const member = await prisma.member.findUnique({
         where: {
           id: userId,
