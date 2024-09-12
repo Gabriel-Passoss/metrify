@@ -2,6 +2,7 @@ import type { FastifyInstance } from 'fastify'
 import { ZodError } from 'zod'
 
 import { BadRequestError } from './_errors/bad-request-error'
+import { ConflictError } from './_errors/conflict-error'
 import { UnauthorizedError } from './_errors/unauthorized-error'
 
 type FastifyErrorHandler = FastifyInstance['errorHandler']
@@ -22,6 +23,12 @@ export const errorHandler: FastifyErrorHandler = (error, request, reply) => {
 
   if (error instanceof UnauthorizedError) {
     return reply.status(401).send({
+      message: error.message,
+    })
+  }
+
+  if (error instanceof ConflictError) {
+    return reply.status(409).send({
       message: error.message,
     })
   }
