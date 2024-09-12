@@ -1,12 +1,12 @@
 import 'fastify'
 
-import { Company, Member } from '@prisma/client'
+import { Member, Organization } from '@prisma/client'
 
 declare module 'fastify' {
   export interface FastifyRequest {
     getCurrentUserId(): Promise<string>
     getUserMembership(
       slug: string,
-    ): Promise<{ company: Company; membership: Member }>
+    ): Promise<{ organization: Organization; membership: Member }>
   }
 }

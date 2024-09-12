@@ -19,15 +19,15 @@ export const authMiddleware = fastifyPlugin(async (app: FastifyInstance) => {
 
     request.getUserMembership = async (slug: string) => {
       const userId = await request.getCurrentUserId()
-      const member = await prisma.member.findUnique({
+      const member = await prisma.member.findFirst({
         where: {
-          id: userId,
-          company: {
+          userId,
+          organization: {
             slug,
           },
         },
         include: {
-          company: true,
+          organization: true,
         },
       })
 
@@ -35,10 +35,10 @@ export const authMiddleware = fastifyPlugin(async (app: FastifyInstance) => {
         throw new UnauthorizedError(`You're not a member of ${slug} company`)
       }
 
-      const { company, ...membership } = member
+      const { organization, ...membership } = member
 
       return {
-        company,
+        organization,
         membership,
       }
     }
