@@ -17,6 +17,7 @@ import { getProfile } from './http/routes/auth/get-profile.controller'
 import { createOrganization } from './http/routes/orgs/create-organization.controller'
 import { getMembership } from './http/routes/orgs/get-membership.controller'
 import { getOrganization } from './http/routes/orgs/get-organization.controller'
+import { getOrganizations } from './http/routes/orgs/get-organizations.controller'
 
 export const app = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -55,6 +56,7 @@ app.register(getProfile)
 app.register(createOrganization)
 app.register(getMembership)
 app.register(getOrganization)
+app.register(getOrganizations)
 
 app.listen().then(() => {
   // console.log('Server running!')
