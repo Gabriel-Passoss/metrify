@@ -17,6 +17,11 @@ import { saleSubject } from './subjects/sale'
 import { sellerSubject } from './subjects/seller'
 import { storeSubject } from './subjects/store'
 
+export * from './models/organization'
+export * from './models/sale'
+export * from './models/user'
+export * from './roles'
+
 const appAbilitiesSchema = z.union([
   organizationSubject,
   inviteSubject,
