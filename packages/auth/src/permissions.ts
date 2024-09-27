@@ -13,8 +13,8 @@ export const permissions: Record<Role, PermissionsByRole> = {
   ADMIN: (user, { can, cannot }) => {
     can('manage', 'all')
 
-    cannot(['transfer_ownership'], 'Organization')
-    can(['transfer_ownership'], 'Organization', {
+    cannot(['transfer_ownership', 'delete'], 'Organization')
+    can(['transfer_ownership', 'delete'], 'Organization', {
       ownerId: { $eq: user.id },
     })
   },
