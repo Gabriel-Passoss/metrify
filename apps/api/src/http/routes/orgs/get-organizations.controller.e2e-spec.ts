@@ -57,8 +57,6 @@ describe('(E2E) Get Organizations', () => {
       .get(`/organizations`)
       .set('Authorization', `Bearer ${token}`)
 
-    // console.log(response.body)
-
     expect(response.status).toBe(200)
     expect(response.body.organizations).toHaveLength(2)
   })

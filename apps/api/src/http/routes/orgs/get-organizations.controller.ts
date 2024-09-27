@@ -64,8 +64,6 @@ export async function getOrganizations(app: FastifyInstance) {
           },
         )
 
-        console.log(organizations)
-
         return reply.status(200).send({
           organizations: organizationsWithUserRole,
         })
