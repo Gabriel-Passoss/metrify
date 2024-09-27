@@ -20,6 +20,11 @@ describe('(E2E) Update Organization', () => {
       data: owner,
     })
 
+    const member = await makeUser()
+    await prisma.user.create({
+      data: member,
+    })
+
     const organization = await makeOrganization({}, owner.id)
     await prisma.organization.create({
       data: organization,
@@ -33,7 +38,15 @@ describe('(E2E) Update Organization', () => {
       },
     })
 
-    const token = app.jwt.sign({ sub: owner.id })
+    await prisma.member.create({
+      data: {
+        userId: member.id,
+        organizationId: organization.id,
+        role: 'ADMIN',
+      },
+    })
+
+    const token = app.jwt.sign({ sub: member.id })
 
     const response = await request(app.server)
       .patch(`/organizations/${organization.slug}`)
@@ -42,13 +55,63 @@ describe('(E2E) Update Organization', () => {
       })
       .set('Authorization', `Bearer ${token}`)
 
-    console.log(response.body)
-
     expect(response.status).toBe(204)
 
     const organizationOnDatabase = await prisma.organization.findFirst({
       where: {
         name: 'Test Change',
+      },
+    })
+
+    expect(organizationOnDatabase).toBeTruthy()
+  })
+
+  it('should not be able update an organization using no admin member', async () => {
+    const owner = await makeUser()
+    await prisma.user.create({
+      data: owner,
+    })
+
+    const seller = await makeUser()
+    await prisma.user.create({
+      data: seller,
+    })
+
+    const organization = await makeOrganization({}, owner.id)
+    await prisma.organization.create({
+      data: organization,
+    })
+
+    await prisma.member.create({
+      data: {
+        userId: owner.id,
+        organizationId: organization.id,
+        role: 'ADMIN',
+      },
+    })
+
+    await prisma.member.create({
+      data: {
+        userId: seller.id,
+        organizationId: organization.id,
+        role: 'SELLER',
+      },
+    })
+
+    const token = app.jwt.sign({ sub: seller.id })
+
+    const response = await request(app.server)
+      .patch(`/organizations/${organization.slug}`)
+      .send({
+        name: 'Test Change',
+      })
+      .set('Authorization', `Bearer ${token}`)
+
+    expect(response.status).toBe(401)
+
+    const organizationOnDatabase = await prisma.organization.findFirst({
+      where: {
+        name: organization.name,
       },
     })
 
