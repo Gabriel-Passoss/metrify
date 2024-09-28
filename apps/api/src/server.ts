@@ -14,6 +14,7 @@ import { errorHandler } from './http/error-handler'
 import { authenticateWithPassword } from './http/routes/auth/authenticate-with-password.controller'
 import { createAccount } from './http/routes/auth/create-account.controller'
 import { getProfile } from './http/routes/auth/get-profile.controller'
+import { getMembers } from './http/routes/members/get-members.controller'
 import { createOrganization } from './http/routes/orgs/create-organization.controller'
 import { getMembership } from './http/routes/orgs/get-membership.controller'
 import { getOrganization } from './http/routes/orgs/get-organization.controller'
@@ -61,6 +62,9 @@ app.register(getOrganization)
 app.register(getOrganizations)
 app.register(updateOrganization)
 app.register(shutdownOrganization)
+
+// Member controllers
+app.register(getMembers)
 
 app.listen().then(() => {
   // console.log('Server running!')
