@@ -1,0 +1,22 @@
+{
+  "name": "@metrify/env",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "devDependencies": {
+    "@metrify/eslint-config": "*",
+    "@metrify/prettier": "*",
+    "@types/node": "^22.7.4"
+  },
+  "prettier": "@metrify/prettier",
+  "eslintConfig": {
+    "extends": [
+      "@metrify/eslint-config/node"
+    ]
+  },
+  "dependencies": {
+    "@t3-oss/env-nextjs": "^0.11.1",
+    "zod": "^3.23.8"
+  }
+}

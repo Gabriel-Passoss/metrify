@@ -1,3 +1,4 @@
+import { config } from 'dotenv'
 import swc from 'unplugin-swc'
 import tsConfigPaths from 'vite-tsconfig-paths'
 import { defineConfig } from 'vitest/config'
@@ -8,6 +9,9 @@ export default defineConfig({
     globals: true,
     root: './',
     environmentMatchGlobs: [['src/http/**', 'prisma']],
+    env: {
+      ...config({ path: '../../.env.test' }).parsed,
+    },
   },
   plugins: [
     tsConfigPaths(),

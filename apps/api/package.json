@@ -2,9 +2,12 @@
   "name": "@metrify/api",
   "version": "1.0.0",
   "scripts": {
-    "dev": "tsx watch src/server.ts",
+    "dev": "npm run env:load tsx watch src/server.ts",
     "pretest:e2e": "cd prisma/vitest-environment-prisma && npm link",
-    "test:e2e": "vitest run --config ./vitest.config.e2e.ts"
+    "test:e2e": "vitest run --config ./vitest.config.e2e.ts",
+    "db:migrate": "npm run env:load prisma migrate dev",
+    "db:studio": "npm run env:load prisma studio",
+    "env:load": "dotenv -e ../../.env --"
   },
   "dependencies": {
     "@fastify/cors": "^9.0.1",
@@ -12,6 +15,7 @@
     "@fastify/swagger": "^8.15.0",
     "@fastify/swagger-ui": "^4.1.0",
     "@metrify/auth": "*",
+    "@metrify/env": "*",
     "@prisma/client": "^5.19.1",
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.5",

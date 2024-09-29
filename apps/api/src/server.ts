@@ -2,6 +2,7 @@ import fastifyCors from '@fastify/cors'
 import fastifyJwt from '@fastify/jwt'
 import fastifySwagger from '@fastify/swagger'
 import fastifySwaggerUI from '@fastify/swagger-ui'
+import { env } from '@metrify/env'
 import { fastify } from 'fastify'
 import {
   jsonSchemaTransform,
@@ -29,7 +30,7 @@ export const app = fastify().withTypeProvider<ZodTypeProvider>()
 app.setSerializerCompiler(serializerCompiler)
 app.setValidatorCompiler(validatorCompiler)
 app.register(fastifyJwt, {
-  secret: 'develop',
+  secret: env.JWT_SECRET,
 })
 
 app.register(fastifySwagger, {
@@ -78,6 +79,8 @@ app.register(getMembers)
 app.register(updateMember)
 app.register(removeMember)
 
-app.listen().then(() => {
-  // console.log('Server running!')
-})
+if (env.NODE_ENV !== 'test') {
+  app.listen({ port: env.PORT }).then(() => {
+    console.log('Server running!')
+  })
+}
