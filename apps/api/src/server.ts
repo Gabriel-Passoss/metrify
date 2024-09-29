@@ -15,6 +15,7 @@ import { authenticateWithPassword } from './http/routes/auth/authenticate-with-p
 import { createAccount } from './http/routes/auth/create-account.controller'
 import { getProfile } from './http/routes/auth/get-profile.controller'
 import { getMembers } from './http/routes/members/get-members.controller'
+import { removeMember } from './http/routes/members/remove-member.controller'
 import { updateMember } from './http/routes/members/update-member.controller'
 import { createOrganization } from './http/routes/orgs/create-organization.controller'
 import { getMembership } from './http/routes/orgs/get-membership.controller'
@@ -75,6 +76,7 @@ app.register(shutdownOrganization)
 // Member controllers
 app.register(getMembers)
 app.register(updateMember)
+app.register(removeMember)
 
 app.listen().then(() => {
   // console.log('Server running!')
