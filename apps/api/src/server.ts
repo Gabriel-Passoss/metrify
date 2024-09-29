@@ -37,7 +37,15 @@ app.register(fastifySwagger, {
       description: 'Documentação para utilização da API Metrify',
       version: '1.0.0',
     },
-    servers: [],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
   },
   transform: jsonSchemaTransform,
 })
@@ -66,6 +74,6 @@ app.register(shutdownOrganization)
 // Member controllers
 app.register(getMembers)
 
-app.listen().then(() => {
+app.listen({ port: 3333 }).then(() => {
   // console.log('Server running!')
 })

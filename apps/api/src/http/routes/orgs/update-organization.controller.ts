@@ -21,6 +21,7 @@ export async function updateOrganization(app: FastifyInstance) {
         schema: {
           tags: ['Organization'],
           summary: 'Update a organization',
+          security: [{ bearerAuth: [] }],
           body: z.object({
             name: z.string().optional(),
             document: z
@@ -35,7 +36,7 @@ export async function updateOrganization(app: FastifyInstance) {
             slug: z.string(),
           }),
           response: {
-            204: z.null,
+            204: z.null(),
             409: z.object({
               message: z.string(),
             }),
