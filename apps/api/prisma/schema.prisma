@@ -115,5 +115,4 @@ enum Role {
   ADMIN
   MANAGER
   SELLER
-  BILLING
 }
