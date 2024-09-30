@@ -15,6 +15,7 @@ import { errorHandler } from './http/error-handler'
 import { authenticateWithPassword } from './http/routes/auth/authenticate-with-password.controller'
 import { createAccount } from './http/routes/auth/create-account.controller'
 import { getProfile } from './http/routes/auth/get-profile.controller'
+import { acceptInvite } from './http/routes/invites/accept-invite.controller'
 import { createInvite } from './http/routes/invites/create-invite.controller'
 import { getInvite } from './http/routes/invites/get-invite.controller'
 import { getInvites } from './http/routes/invites/get-invites.controller'
@@ -86,6 +87,7 @@ app.register(removeMember)
 app.register(createInvite)
 app.register(getInvite)
 app.register(getInvites)
+app.register(acceptInvite)
 
 if (env.NODE_ENV !== 'test') {
   app.listen({ port: env.PORT }).then(() => {
