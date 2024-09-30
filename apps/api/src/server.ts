@@ -17,6 +17,7 @@ import { createAccount } from './http/routes/auth/create-account.controller'
 import { getProfile } from './http/routes/auth/get-profile.controller'
 import { createInvite } from './http/routes/invites/create-invite.controller'
 import { getInvite } from './http/routes/invites/get-invite.controller'
+import { getInvites } from './http/routes/invites/get-invites.controller'
 import { getMembers } from './http/routes/members/get-members.controller'
 import { removeMember } from './http/routes/members/remove-member.controller'
 import { updateMember } from './http/routes/members/update-member.controller'
@@ -84,6 +85,7 @@ app.register(removeMember)
 // Invite controllers
 app.register(createInvite)
 app.register(getInvite)
+app.register(getInvites)
 
 if (env.NODE_ENV !== 'test') {
   app.listen({ port: env.PORT }).then(() => {
