@@ -15,6 +15,7 @@ import { errorHandler } from './http/error-handler'
 import { authenticateWithPassword } from './http/routes/auth/authenticate-with-password.controller'
 import { createAccount } from './http/routes/auth/create-account.controller'
 import { getProfile } from './http/routes/auth/get-profile.controller'
+import { createInvite } from './http/routes/invites/create-invite.controller'
 import { getMembers } from './http/routes/members/get-members.controller'
 import { removeMember } from './http/routes/members/remove-member.controller'
 import { updateMember } from './http/routes/members/update-member.controller'
@@ -78,6 +79,9 @@ app.register(shutdownOrganization)
 app.register(getMembers)
 app.register(updateMember)
 app.register(removeMember)
+
+// Invite controllers
+app.register(createInvite)
 
 if (env.NODE_ENV !== 'test') {
   app.listen({ port: env.PORT }).then(() => {
