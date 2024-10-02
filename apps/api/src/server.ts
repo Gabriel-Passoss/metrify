@@ -32,6 +32,7 @@ import { getOrganizations } from './http/routes/orgs/get-organizations.controlle
 import { shutdownOrganization } from './http/routes/orgs/shutdown-organization.controller'
 import { updateOrganization } from './http/routes/orgs/update-organization.controller'
 import { createStore } from './http/routes/store/create-store.controller'
+import { deleteStore } from './http/routes/store/delete-store.controller'
 
 export const app = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -98,6 +99,7 @@ app.register(getPendingInvites)
 
 // Store controllers
 app.register(createStore)
+app.register(deleteStore)
 
 if (env.NODE_ENV !== 'test') {
   app.listen({ port: env.PORT }).then(() => {
