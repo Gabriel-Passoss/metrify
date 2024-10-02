@@ -27,6 +27,7 @@ model Organization {
 
   invites Invite[]
   members Member[]
+  stores  Store[]
 
   @@map("organizations")
 }
@@ -101,6 +102,20 @@ model Token {
   userId String?
 
   @@map("tokens")
+}
+
+model Store {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  logoUrl     String?  @map("logo_url")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String       @map("organization_id")
+
+  @@map("stores")
 }
 
 enum AccountProvider {
