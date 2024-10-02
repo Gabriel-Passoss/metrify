@@ -80,7 +80,6 @@ describe('(E2E) Get User Invites', () => {
       .get(`/invites/pending`)
       .set('Authorization', `Bearer ${token}`)
 
-    console.log(response.body)
     expect(response.statusCode).toEqual(200)
     expect(response.body.invites).toHaveLength(3)
   })
