@@ -3,6 +3,7 @@ import request from 'supertest'
 import { prisma } from '@/lib/prisma'
 import { app } from '@/server'
 import { makeOrganization } from '@/test/factories/organization-factory'
+import { makeStore } from '@/test/factories/store-factory'
 import { makeUser } from '@/test/factories/user-factory'
 
 describe('(E2E) Create Store', () => {
@@ -52,6 +53,7 @@ describe('(E2E) Create Store', () => {
     })
 
     expect(storeOnDatabase).toBeTruthy()
+    expect(storeOnDatabase?.slug).toBe('testing-store')
   })
 
   it('should not be able to create a store without being an admin or manager', async () => {
@@ -122,11 +124,9 @@ describe('(E2E) Create Store', () => {
       },
     })
 
+    const store = makeStore({ name: 'Testing Store' }, organization.id)
     await prisma.store.create({
-      data: {
-        name: 'Testing Store',
-        organizationId: organization.id,
-      },
+      data: store,
     })
 
     const token = app.jwt.sign({ sub: owner.id })

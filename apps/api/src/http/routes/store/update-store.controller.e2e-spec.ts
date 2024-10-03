@@ -3,6 +3,7 @@ import request from 'supertest'
 import { prisma } from '@/lib/prisma'
 import { app } from '@/server'
 import { makeOrganization } from '@/test/factories/organization-factory'
+import { makeStore } from '@/test/factories/store-factory'
 import { makeUser } from '@/test/factories/user-factory'
 
 describe('(E2E) Update Store', () => {
@@ -33,17 +34,16 @@ describe('(E2E) Update Store', () => {
       },
     })
 
-    const store = await prisma.store.create({
-      data: {
-        name: 'Testing Store',
-        organizationId: organization.id,
-      },
+    const store = makeStore({}, organization.id)
+
+    await prisma.store.create({
+      data: store,
     })
 
     const token = app.jwt.sign({ sub: owner.id })
 
     const response = await request(app.server)
-      .patch(`/organizations/${organization.slug}/stores/${store.id}`)
+      .patch(`/organizations/${organization.slug}/stores/${store.slug}`)
       .send({
         name: 'Testing Name',
       })
@@ -92,17 +92,16 @@ describe('(E2E) Update Store', () => {
       },
     })
 
-    const store = await prisma.store.create({
-      data: {
-        name: 'Testing Store',
-        organizationId: organization.id,
-      },
+    const store = makeStore({}, organization.id)
+
+    await prisma.store.create({
+      data: store,
     })
 
     const token = app.jwt.sign({ sub: seller.id })
 
     const response = await request(app.server)
-      .patch(`/organizations/${organization.slug}/stores/${store.id}`)
+      .patch(`/organizations/${organization.slug}/stores/${store.slug}`)
       .send({
         name: 'Changed Name',
       })

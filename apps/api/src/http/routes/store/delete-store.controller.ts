@@ -2,6 +2,7 @@ import type { FastifyInstance } from 'fastify'
 import { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 
+import { BadRequestError } from '@/http/_errors/bad-request-error'
 import { UnauthorizedError } from '@/http/_errors/unauthorized-error'
 import { authMiddleware } from '@/http/middlewares/auth'
 import { prisma } from '@/lib/prisma'
@@ -12,15 +13,15 @@ export async function deleteStore(app: FastifyInstance) {
     .withTypeProvider<ZodTypeProvider>()
     .register(authMiddleware)
     .delete(
-      '/organizations/:slug/stores/:storeId',
+      '/organizations/:organizationSlug/stores/:storeSlug',
       {
         schema: {
           tags: ['Store'],
           summary: 'Delete a store',
           security: [{ bearerAuth: [] }],
           params: z.object({
-            slug: z.string(),
-            storeId: z.string(),
+            organizationSlug: z.string(),
+            storeSlug: z.string(),
           }),
           response: {
             204: z.null(),
@@ -29,9 +30,9 @@ export async function deleteStore(app: FastifyInstance) {
       },
       async (request, reply) => {
         const userId = await request.getCurrentUserId()
-        const { slug, storeId } = request.params
+        const { organizationSlug, storeSlug } = request.params
         const { membership, organization } =
-          await request.getUserMembership(slug)
+          await request.getUserMembership(organizationSlug)
 
         const { cannot } = getUserPermissions(userId, membership.role)
 
@@ -39,9 +40,20 @@ export async function deleteStore(app: FastifyInstance) {
           throw new UnauthorizedError("You're not allowed to delete a store.")
         }
 
+        const storeOnDatabase = await prisma.store.findFirst({
+          where: {
+            slug: storeSlug,
+            organizationId: organization.id,
+          },
+        })
+
+        if (!storeOnDatabase) {
+          throw new BadRequestError('Store not found.')
+        }
+
         await prisma.store.delete({
           where: {
-            id: storeId,
+            id: storeOnDatabase.id,
             organizationId: organization.id,
           },
         })
