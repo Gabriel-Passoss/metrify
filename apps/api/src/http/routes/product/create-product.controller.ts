@@ -60,7 +60,7 @@ export async function createProduct(app: FastifyInstance) {
               .optional(),
           }),
           response: {
-            // 201: z.null(),
+            201: z.null(),
           },
         },
       },
