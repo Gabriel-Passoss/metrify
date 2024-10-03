@@ -6,6 +6,7 @@ import { ConflictError } from '@/http/_errors/conflict-error'
 import { UnauthorizedError } from '@/http/_errors/unauthorized-error'
 import { authMiddleware } from '@/http/middlewares/auth'
 import { prisma } from '@/lib/prisma'
+import { createSlug } from '@/utils/create-slug'
 import { getUserPermissions } from '@/utils/get-user-permissions'
 
 export async function createStore(app: FastifyInstance) {
@@ -60,6 +61,7 @@ export async function createStore(app: FastifyInstance) {
         await prisma.store.create({
           data: {
             name,
+            slug: createSlug(name),
             description,
             organizationId: organization.id,
           },
