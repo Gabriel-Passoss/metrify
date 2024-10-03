@@ -5,7 +5,8 @@
     "dev": "npm run env:load tsx watch src/server.ts",
     "pretest:e2e": "cd prisma/vitest-environment-prisma && npm link",
     "test:e2e": "vitest run --config ./vitest.config.e2e.ts",
-    "db:migrate": "npm run env:load prisma migrate dev",
+    "db:migrate:dev": "npm run env:load prisma migrate dev",
+    "db:migrate:deploy": "npm run env:load prisma migrate deploy",
     "db:studio": "npm run env:load prisma studio",
     "env:load": "dotenv -e ../../.env --"
   },
