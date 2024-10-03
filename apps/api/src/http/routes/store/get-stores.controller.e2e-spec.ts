@@ -3,6 +3,7 @@ import request from 'supertest'
 import { prisma } from '@/lib/prisma'
 import { app } from '@/server'
 import { makeOrganization } from '@/test/factories/organization-factory'
+import { makeStore } from '@/test/factories/store-factory'
 import { makeUser } from '@/test/factories/user-factory'
 
 describe('(E2E) Get Stores', () => {
@@ -33,25 +34,20 @@ describe('(E2E) Get Stores', () => {
       },
     })
 
+    const storeOne = makeStore({}, organization.id)
+    const storeTwo = makeStore({}, organization.id)
+    const storeThree = makeStore({}, organization.id)
+
     await prisma.store.create({
-      data: {
-        name: 'Testing Store 1',
-        organizationId: organization.id,
-      },
+      data: storeOne,
     })
 
     await prisma.store.create({
-      data: {
-        name: 'Testing Store 2',
-        organizationId: organization.id,
-      },
+      data: storeTwo,
     })
 
     await prisma.store.create({
-      data: {
-        name: 'Testing Store 3',
-        organizationId: organization.id,
-      },
+      data: storeThree,
     })
 
     const token = app.jwt.sign({ sub: owner.id })

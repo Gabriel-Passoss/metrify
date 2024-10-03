@@ -107,6 +107,7 @@ model Token {
 model Store {
   id          String   @id @default(uuid())
   name        String
+  slug        String
   description String?
   logoUrl     String?  @map("logo_url")
   createdAt   DateTime @default(now()) @map("created_at")
