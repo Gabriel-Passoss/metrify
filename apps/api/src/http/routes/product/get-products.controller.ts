@@ -27,6 +27,7 @@ export async function getProducts(app: FastifyInstance) {
             200: z.object({
               products: z.array(
                 z.object({
+                  id: z.string().uuid(),
                   name: z.string(),
                   platform: z.string(),
                   description: z.string().nullable(),
