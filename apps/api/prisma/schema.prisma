@@ -42,6 +42,8 @@ model Member {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String @map("user_id")
 
+  sale Sale[]
+
   @@unique([organizationId, userId])
   @@map("members")
 }
@@ -141,6 +143,7 @@ model Product {
   installmentPrice CreditCardInstallmentPrice[]
   installmentTax   CreditCardTax[]
   extraTaxes       ExtraTax[]
+  sales            Sale[]
 
   @@map("products")
 }
@@ -178,6 +181,25 @@ model ExtraTax {
   @@map("extra_taxes")
 }
 
+model Sale {
+  id            String        @id @default(uuid())
+  platfrom      String
+  paymentMethod PaymentMethod @map("payment_method")
+  saleCode      String        @map("sale_code")
+  status        SaleStatus
+  customerName  String        @map("customer_name")
+  date          DateTime
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+
+  product   Product? @relation(fields: [productId], references: [id])
+  productId String?  @map("product_id")
+  seller    Member   @relation(fields: [sellerId], references: [id])
+  sellerId  String   @map("seller_id")
+
+  @@map("sales")
+}
+
 enum AccountProvider {
   GOOGLE
 }
@@ -190,4 +212,16 @@ enum Role {
   ADMIN
   MANAGER
   SELLER
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  PIX
+  BANKSLIP
+}
+
+enum SaleStatus {
+  PAID
+  PENDING
+  CANCELED
 }
