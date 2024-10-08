@@ -34,6 +34,7 @@ import { updateOrganization } from './http/routes/orgs/update-organization.contr
 import { createProduct } from './http/routes/product/create-product.controller'
 import { deleteProduct } from './http/routes/product/delete-product.controller'
 import { getProducts } from './http/routes/product/get-products.controller'
+import { updateProduct } from './http/routes/product/update-product.controller'
 import { createStore } from './http/routes/store/create-store.controller'
 import { deleteStore } from './http/routes/store/delete-store.controller'
 import { getStores } from './http/routes/store/get-stores.controller'
@@ -112,6 +113,7 @@ app.register(updateStore)
 app.register(createProduct)
 app.register(getProducts)
 app.register(deleteProduct)
+app.register(updateProduct)
 
 if (env.NODE_ENV !== 'test') {
   app.listen({ port: env.PORT }).then(() => {
