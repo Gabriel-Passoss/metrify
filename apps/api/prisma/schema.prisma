@@ -113,10 +113,69 @@ model Store {
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
-  organization   Organization @relation(fields: [organizationId], references: [id])
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   organizationId String       @map("organization_id")
 
+  products Product[]
+
   @@map("stores")
+}
+
+model Product {
+  id           String  @id @default(uuid())
+  name         String
+  platform     String
+  description  String?
+  imageUrl     String? @map("image_url")
+  price        Int
+  quantity     Int
+  costPerUnit  Int?    @map("cost_per_unit")
+  shippingCost Int?    @map("shipping_cost")
+  taxCost      Int?    @map("tax_cost")
+  pixTax       Int?    @map("pix_tax")
+  bankSlipTax  Int?    @map("bank_slip_tax")
+
+  store   Store  @relation(fields: [storeId], references: [id])
+  storeId String @map("store_id")
+
+  installmentPrice CreditCardInstallmentPrice[]
+  installmentTax   CreditCardTax[]
+  extraTaxes       ExtraTax[]
+
+  @@map("products")
+}
+
+model CreditCardInstallmentPrice {
+  id                String @id @default(uuid())
+  installmentNumber Int    @map("installment_number")
+  price             Int
+
+  product   Product @relation(fields: [productId], references: [id])
+  productId String  @map("product_id")
+
+  @@map("credit_card_installment_prices")
+}
+
+model CreditCardTax {
+  id                String @id @default(uuid())
+  installmentNumber Int    @map("installment_number")
+  tax               Int
+
+  product   Product @relation(fields: [productId], references: [id])
+  productId String  @map("product_id")
+
+  @@map("credit_card_taxes")
+}
+
+model ExtraTax {
+  id   String @id @default(uuid())
+  name String
+  tax  Int
+
+  product   Product @relation(fields: [productId], references: [id])
+  productId String  @map("product_id")
+
+  @@map("extra_taxes")
 }
 
 enum AccountProvider {

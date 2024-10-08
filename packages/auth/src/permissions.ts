@@ -26,8 +26,6 @@ export const permissions: Record<Role, PermissionsByRole> = {
   },
   SELLER: (user, { can }) => {
     can('manage', 'Sale', { sellerId: { $eq: user.id } })
-  },
-  BILLING: (_, { can }) => {
-    can('manage', 'Billing')
+    can('read', 'Product')
   },
 }
